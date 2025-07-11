@@ -1,31 +1,43 @@
 import React, { useState, useRef, useEffect } from 'react';
+import * as Clipboard from 'expo-clipboard';
+
 import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 
 const GRID_SIZE = 4;
-const TOTAL_TIME = 180; // 3 minutes in seconds
-const letterOptions = ['T', 'W', 'Y', 'R', 'E', 'N', 'P', 'H', 'G', 'S', 'C', 'R', 'O', 'N', 'S', 'E'];
-const acceptableWords = ['ten', 'song', 'went', 'sent', 'net'];
+const TOTAL_TIME = 15; // 3 minutes in seconds
+const letterOptions = ['T', 'W', 'Y', 'R', 'E', 'N', 'A', 'H', 'G', 'S', 'C', 'R', 'O', 'N', 'S', 'E'];
+const acceptableWords = ['ten', 'tens', 'song', 'son', 'went', 'sent', 'net', 'arch', 'ray'];
 
 export default function Game() {
   const [selectedIndices, setSelectedIndices] = useState([]);
+  const [usedIndices, setUsedIndices] = useState(new Set());
   const [wordBank, setWordBank] = useState([]);
   const [error, setError] = useState(false);
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
+
   const shakeAnim = useRef(new Animated.Value(0)).current;
 
+  const timerRef = useRef(null);
+
   useEffect(() => {
-    const interval = setInterval(() => {
+    startTimer();
+    return () => clearInterval(timerRef.current);
+  }, []);
+
+  const startTimer = () => {
+    clearInterval(timerRef.current); // clear old if any
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(timerRef.current);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+
 
   const isAdjacent = (lastIndex, newIndex) => {
     if (lastIndex === null) return true;
@@ -55,6 +67,9 @@ export default function Game() {
     if (acceptableWords.includes(word)) {
       if (!wordBank.includes(word)) {
         setWordBank([...wordBank, word]);
+
+        // Update usedIndices
+        setUsedIndices(prev => new Set([...prev, ...selectedIndices]));
       }
       setSelectedIndices([]);
     } else {
@@ -65,12 +80,35 @@ export default function Game() {
   const handleResetGame = () => {
     setSelectedIndices([]);
     setWordBank([]);
-    setTimeLeft(TOTAL_TIME)
+    setTimeLeft(TOTAL_TIME);
+    setUsedIndices(new Set())
+    startTimer(); // restart the timer
   };
+
 
   const handleClear = () => {
     setSelectedIndices([]);
   }
+
+  const handleShare = () => {
+    const allLettersUsed = wordBank.join('').toUpperCase().split('');
+    const totalCells = letterOptions.length;
+    const usedArray = Array.from(usedIndices);
+    const usedCount = usedArray.length;
+
+    const percentage = Math.round((usedCount / totalCells) * 100);
+
+    let grid = '';
+    for (let i = 0; i < totalCells; i++) {
+      if (i % GRID_SIZE === 0 && i !== 0) grid += '\n';
+      grid += usedIndices.has(i) ? '🟩' : '⬛️';
+    }
+
+    const message = `🧠 Woggle #1: ${allLettersUsed.length + usedCount}\n${grid}`;
+
+    Clipboard.setStringAsync(message);
+    alert('Score copied to clipboard!');
+  };
 
   const triggerErrorFeedback = () => {
     setError(true);
@@ -112,17 +150,26 @@ export default function Game() {
 
       <Text style={styles.word}>{currentWord}</Text>
 
-      <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
+     {timeLeft > 0 ? <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
         <Pressable
           style={[styles.addLetterButton, error && styles.errorButton]}
           onPress={handleAddWord}
           disabled={timeLeft === 0}
         >
           <Text style={styles.buttonText}>
-            {timeLeft === 0 ? 'Time’s Up' : 'Add'}
+            Add
           </Text>
         </Pressable>
       </Animated.View>
+      : <Pressable
+          style={[styles.addLetterButton, styles.greenButton]}
+          onPress={handleShare}
+        >
+          <Text style={styles.buttonText}>
+            Share
+          </Text>
+        </Pressable>
+      }
 
       <Pressable
         style={styles.addLetterButton}
@@ -222,10 +269,14 @@ const styles = StyleSheet.create({
   wordBank: {
     marginTop: 30,
     alignItems: 'center',
+    display: 'flex'
   },
   wordItem: {
     fontSize: 18,
     color: '#2d3436',
     marginVertical: 2,
   },
+  greenButton: {
+    backgroundColor: 'green'
+  }
 });
