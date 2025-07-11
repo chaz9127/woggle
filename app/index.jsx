@@ -14,18 +14,6 @@ const Home = () => {
         <View style={styles.logoBorder}>
           <Image source={Logo} />
         </View>
-        <View style={styles.card.bg}>
-          <View style={styles.card}>
-            <Text style={styles.card.header}>Your Best</Text>
-            <Text style={styles.card.body}>0</Text>
-          </View>
-        </View>
-        <View style={styles.card.bg}>
-          <View style={styles.card}>
-            <Text style={styles.card.header}>World's Best</Text>
-            <Text style={styles.card.body}>0</Text>
-          </View>
-        </View>
         <Link href="/game" style={styles.playButton}>Play</Link>
       </View>
     </View>
@@ -58,28 +46,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     fontFamily: ''
-  },
-  card: {
-    bg: {
-      width: "100%",
-      borderRadius: borderRadius/2,
-      overflow: 'hidden',
-      marginTop,
-      backgroundColor: "rgb(199, 199, 199)"
-    },
-    header: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      display: 'block',
-      paddingTop: 8,
-      paddingBottom: 8,
-      backgroundColor: 'blue'
-    },
-    body: {
-      textAlign: 'center',
-      fontSize: 32,
-    }
   },
   playButton: {
     display: 'inline-block',
