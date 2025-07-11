@@ -1,27 +1,16 @@
-import React, { useState } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 
-const pads = [{color: 'red', glow: ''}, {color: 'blue', glow: ''}, {color: 'orange', glow: ''}, {color: 'yellow', glow: ''}];
+const letterOptions = ['T', 'W', 'Y', 'R', 'E', 'N', 'P', 'H', 'G', 'S', 'C', 'R', 'O', 'N', 'S', 'E'];
 
 export default function Game() {
-  const [activeIndex, setActiveIndex] = useState(null);
-
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
-        {pads.map((pad, index) => (
-          <Pressable
-            key={index}
-            onPressIn={() => setActiveIndex(index)}
-            onPressOut={() => setActiveIndex(null)}
-            style={[
-              styles.cell,
-              { backgroundColor: pad.color },
-              activeIndex === index && {
-                boxShadow: `0 0 10px 2px ${pad.color}`
-              },
-            ]}
-          />
+        {letterOptions.map((letter, idx) => (
+          <Pressable key={idx} style={styles.cell}>
+            <Text style={styles.letter}>{letter}</Text>
+          </Pressable>
         ))}
       </View>
     </View>
@@ -31,9 +20,8 @@ export default function Game() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // vertically center
-    alignItems: 'center',     // horizontally center
-    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   grid: {
     width: 200,
@@ -42,12 +30,16 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   cell: {
-    width: 90,
-    height: 90,
-    margin: 5,
-    borderRadius: 12,
+    width: 45,
+    height: 45,
+    margin: 2,
+    backgroundColor: '#ddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
   },
-  glow: {
-    boxShadow: '0 0 15px 2px #48abe0'
+  letter: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "scheme": "holidaysays",
-    "name": "Holiday-Says",
-    "slug": "Holiday-Says",
+    "scheme": "woggle",
+    "name": "Woggle",
+    "slug": "Woggle",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
