@@ -3,10 +3,16 @@ import * as Clipboard from 'expo-clipboard';
 
 import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 
-const GRID_SIZE = 4;
+const GRID_SIZE = 5;
 const TOTAL_TIME = 15; // 3 minutes in seconds
-const letterOptions = ['T', 'W', 'Y', 'R', 'E', 'N', 'A', 'H', 'G', 'S', 'C', 'R', 'O', 'N', 'S', 'E'];
-const acceptableWords = ['ten', 'tens', 'song', 'son', 'went', 'sent', 'net', 'arch', 'ray'];
+const letterOptions = [
+  "e", "qu", "a", "r", "t",
+  "l", "o", "s", "n", "m",
+  "d", "i", "p", "g", "b",
+  "u", "c", "y", "h", "k",
+  "z", "v", "x", "f", "w"
+];
+const acceptableWords = ['elduzvxfwkbmt', 'ten', 'tens', 'soil', 'song', 'son', 'went', 'sent', 'net', 'arch', 'ray', 'quart', 'pile', 'lie', 'oil'];
 
 export default function Game() {
   const [selectedIndices, setSelectedIndices] = useState([]);
@@ -149,44 +155,47 @@ export default function Game() {
       </View>
 
       <Text style={styles.word}>{currentWord}</Text>
+      <View style={styles.controls}>
+        {timeLeft > 0 ? <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
+          <Pressable
+            style={[styles.addLetterButton, error && styles.errorButton]}
+            onPress={handleAddWord}
+            disabled={timeLeft === 0}
+          >
+            <Text style={styles.buttonText}>
+              Add
+            </Text>
+          </Pressable>
+        </Animated.View>
+        : <Pressable
+            style={[styles.addLetterButton, styles.greenButton]}
+            onPress={handleShare}
+          >
+            <Text style={styles.buttonText}>
+              Share
+            </Text>
+          </Pressable>
+        }
 
-     {timeLeft > 0 ? <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
         <Pressable
-          style={[styles.addLetterButton, error && styles.errorButton]}
-          onPress={handleAddWord}
-          disabled={timeLeft === 0}
+          style={styles.addLetterButton}
+          onPress={handleClear}
         >
-          <Text style={styles.buttonText}>
-            Add
-          </Text>
+          <Text style={styles.buttonText}>Clear</Text>
         </Pressable>
-      </Animated.View>
-      : <Pressable
-          style={[styles.addLetterButton, styles.greenButton]}
-          onPress={handleShare}
+        <Pressable
+          style={styles.addLetterButton}
+          onPress={handleResetGame}
         >
-          <Text style={styles.buttonText}>
-            Share
-          </Text>
+          <Text style={styles.buttonText}>Reset Game</Text>
         </Pressable>
-      }
-
-      <Pressable
-        style={styles.addLetterButton}
-        onPress={handleClear}
-      >
-        <Text style={styles.buttonText}>Clear</Text>
-      </Pressable>
-      <Pressable
-        style={styles.addLetterButton}
-        onPress={handleResetGame}
-      >
-        <Text style={styles.buttonText}>Reset Game</Text>
-      </Pressable>
-
+      </View>
       <View style={styles.wordBank}>
         {wordBank.map((word, i) => (
-          <Text key={i} style={styles.wordItem}>{word}</Text>
+          <View key={i} style={styles.wordItem}>
+            <Text style={styles.score}>{word}</Text>
+            <Text style={styles.score}>{word.length}</Text>
+          </View>
         ))}
       </View>
     </View>
@@ -220,8 +229,8 @@ const styles = StyleSheet.create({
   },
   grid: {
     marginTop: 20,
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
@@ -241,6 +250,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  controls: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 8
   },
   word: {
     marginTop: 16,
@@ -268,13 +282,17 @@ const styles = StyleSheet.create({
   },
   wordBank: {
     marginTop: 30,
-    alignItems: 'center',
-    display: 'flex'
+    display: 'flex',
+    minWidth: 100
   },
   wordItem: {
     fontSize: 18,
     color: '#2d3436',
     marginVertical: 2,
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    gap: 20
   },
   greenButton: {
     backgroundColor: 'green'

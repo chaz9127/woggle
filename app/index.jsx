@@ -14,7 +14,8 @@ const Home = () => {
         <View style={styles.logoBorder}>
           <Image source={Logo} />
         </View>
-        <Link href="/game" style={styles.playButton}>Play</Link>
+        <Link href="/game" style={styles.playButton}>Daily Puzzle</Link>
+        <Link href="/game" style={styles.playButton}>Unlimited</Link>
       </View>
     </View>
   )
