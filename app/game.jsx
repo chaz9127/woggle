@@ -12,7 +12,7 @@ const letterOptions = [
   "u", "c", "y", "h", "k",
   "z", "v", "x", "f", "w"
 ];
-const acceptableWords = ['elduzvxfwkbmt', 'ten', 'tens', 'soil', 'song', 'son', 'went', 'sent', 'net', 'arch', 'ray', 'quart', 'pile', 'lie', 'oil'];
+const acceptableWords = ['elduzvxfwkbmt', 'ten', 'tens', 'soil', 'song', 'son', 'went', 'sent', 'net', 'arch', 'ray', 'quart', 'pile', 'lie', 'oil', ''];
 
 export default function Game() {
   const [selectedIndices, setSelectedIndices] = useState([]);
